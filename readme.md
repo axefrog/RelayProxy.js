@@ -24,52 +24,58 @@ At its simplest, the following will instantiate a non-authenticating transparent
 proxy that forwards requests to the target url without relaying the request
 through a third-party proxy:
 
-    var RelayProxy = require('./path/to/relay-proxy');
-    var server = new RelayProxy();
-    server.listen(3333);
+```js
+var RelayProxy = require('./path/to/relay-proxy');
+var server = new RelayProxy();
+server.listen(3333);
+```
 
 ### Local authorization
 
 To authorize access to your proxy, provide a handler function:
 
-    var RelayProxy = require('./path/to/relay-proxy');
-    var server = new RelayProxy();
+```js
+var RelayProxy = require('./path/to/relay-proxy');
+var server = new RelayProxy();
+
+server.authorize(function(req, username, password, callback) {
+    // replace with code to verify username and password
+    var isLoginCorrect = true;
     
-    server.authorize(function(req, username, password, callback) {
-        // replace with code to verify username and password
-        var isLoginCorrect = true;
-        
-        // call the supplied callback function to continue the request
-        callback(null, isLoginCorrect);
-    });
-    
-    server.listen(3333);
+    // call the supplied callback function to continue the request
+    callback(null, isLoginCorrect);
+});
+```
+
+server.listen(3333);
 
 ### Using a remote proxy
 
 To forward requests via a third-party proxy, provide a handler function:
 
-    var RelayProxy = require('./path/to/relay-proxy');
-    var server = new RelayProxy();
-    
-    server.selectForwardProxy(function(req, username, callback) {
-        
-        var proxy = {
-            host: '1.2.3.4',
-            port: 31337,
-            username: 'jimbob', // only supply a username and password if
-            password: 'mcgee'   // the remote proxy requires authorization
-        };
-        
-        // the callback's second argument can be one of three values:
-        // null:  no remote proxy - forward directly to the requested url
-        // false: decline to forward the request (http 407 sent back to client)
-        // proxy: proxy options as specified in the above sample
+```js
+var RelayProxy = require('./path/to/relay-proxy');
+var server = new RelayProxy();
 
-        callback(null, proxy);
-    });
+server.selectForwardProxy(function(req, username, callback) {
     
-    server.listen(3333);
+    var proxy = {
+        host: '1.2.3.4',
+        port: 31337,
+        username: 'jimbob', // only supply a username and password if
+        password: 'mcgee'   // the remote proxy requires authorization
+    };
+    
+    // the callback's second argument can be one of three values:
+    // null:  no remote proxy - forward directly to the requested url
+    // false: decline to forward the request (http 407 sent back to client)
+    // proxy: proxy options as specified in the above sample
+
+    callback(null, proxy);
+});
+
+server.listen(3333);
+```
 
 ## Dependencies
 
