@@ -45,9 +45,9 @@ server.authorize(function(req, username, password, callback) {
     // call the supplied callback function to continue the request
     callback(null, isLoginCorrect);
 });
-```
 
 server.listen(3333);
+```
 
 ### Using a remote proxy
 
